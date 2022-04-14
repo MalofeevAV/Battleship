@@ -112,7 +112,7 @@ public class Battleship {
         for (Object[] battleShip : battleShips) {
             System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip[0], battleShip[1]);
             while (true) {
-                // проверка входящих данных
+                // input data validation
                 if (takeCoordinates()) {
                     System.out.println("Error! Wrong ship coordinates! Try again:\n");
                     continue;
@@ -120,12 +120,12 @@ public class Battleship {
 
                 int lengthOfTheShip = (((int) leftCharCoord == (int) rigthCharCoord) ? Math.abs(leftIntCoord - rigthIntCoord) + 1 : Math.abs((int) leftCharCoord - (int) rigthCharCoord) + 1);
 
-                if (lengthOfTheShip > (int) battleShip[1] || lengthOfTheShip < 1) {
+                if (lengthOfTheShip != (int) battleShip[1]) {
                     System.out.printf("Error! Wrong length of the %s! Try again: \n\n", battleShip[0]);
                 } else if (
-                    // проверка - если корабль не в одну линию
+                    // validation if the ship is not in one line
                     (((int) leftCharCoord != (int) rigthCharCoord) && (leftIntCoord != rigthIntCoord)) ||
-                    // проверка границы поля боя
+                    // validation of the battlefield boundaries
                     ((int) leftCharCoord * (int) rigthCharCoord) < (int) 'A' * (int) 'A' ||
                     ((int) leftCharCoord * (int) rigthCharCoord) > (int) 'J' * (int) 'J' ||
                     (leftIntCoord * rigthIntCoord) < 1 ||
