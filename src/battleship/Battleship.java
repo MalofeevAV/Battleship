@@ -41,6 +41,7 @@ public class Battleship {
         for (Character key: battleField.keySet()) {
             System.out.println(key + String.join("", battleField.get(key)));
         }
+        System.out.println();
     }
 
 
@@ -52,6 +53,7 @@ public class Battleship {
 
         try {
             coordinates = sc.nextLine().toUpperCase().split(" ");
+            System.out.println();
             try {
                 leftCharCoord = coordinates[0].charAt(0);
                 leftIntCoord = Integer.parseInt(coordinates[0].substring(1));
@@ -108,16 +110,15 @@ public class Battleship {
     public static void fillBattleField(ArrayList<Object []> createdShipsCoordinates, Object[][] battleShips) {
 
         for (Object[] battleShip : battleShips) {
+            System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip[0], battleShip[1]);
             while (true) {
-                System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip[0], battleShip[1]);
-
                 // проверка входящих данных
                 if (takeCoordinates()) {
-                    System.out.println("Error! Wrong ship coordinates! Try again:");
+                    System.out.println("Error! Wrong ship coordinates! Try again:\n");
                     continue;
                 }
 
-                int lengthOfTheShip = Math.abs(leftIntCoord - rigthIntCoord) + 1;
+                int lengthOfTheShip = (((int) leftCharCoord == (int) rigthCharCoord) ? Math.abs(leftIntCoord - rigthIntCoord) + 1 : Math.abs((int) leftCharCoord - (int) rigthCharCoord) + 1);
 
                 if (lengthOfTheShip > (int) battleShip[1] || lengthOfTheShip < 1) {
                     System.out.printf("Error! Wrong length of the %s! Try again: \n\n", battleShip[0]);
@@ -125,14 +126,14 @@ public class Battleship {
                     // проверка - если корабль не в одну линию
                     (((int) leftCharCoord != (int) rigthCharCoord) && (leftIntCoord != rigthIntCoord)) ||
                     // проверка границы поля боя
-                    ((int) leftCharCoord + (int) rigthCharCoord) < (int) 'A' + (int) 'A' ||
-                    ((int) leftCharCoord + (int) rigthCharCoord) > (int) 'J' + (int) 'J' ||
-                    (leftIntCoord + rigthIntCoord) < 2 ||
-                    (leftIntCoord + rigthIntCoord) > 20
+                    ((int) leftCharCoord * (int) rigthCharCoord) < (int) 'A' * (int) 'A' ||
+                    ((int) leftCharCoord * (int) rigthCharCoord) > (int) 'J' * (int) 'J' ||
+                    (leftIntCoord * rigthIntCoord) < 1 ||
+                    (leftIntCoord * rigthIntCoord) > 100
                 ) {
-                    System.out.println("Error! Wrong ship location! Try again:");
+                    System.out.println("Error! Wrong ship location! Try again:\n");
                 } else if (compareCoordinates(createdShipsCoordinates, leftCharCoord, leftIntCoord, rigthCharCoord, rigthIntCoord)) {
-                    System.out.println("Error! You placed it too close to another one. Try again:");
+                    System.out.println("Error! You placed it too close to another one. Try again:\n");
                 } else {
                     for (int i=Math.min((int) leftCharCoord, (int) rigthCharCoord); i<=Math.max((int) leftCharCoord, (int) rigthCharCoord); i++) {
                         for (int j=Math.min(leftIntCoord, rigthIntCoord); j<=Math.max(leftIntCoord, rigthIntCoord); j++) {
