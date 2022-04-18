@@ -10,7 +10,8 @@ public class Battleship {
     private static char leftCharCoord, rigthCharCoord;
     private static int leftIntCoord, rigthIntCoord;
 
-    private static HashMap<Character, String[]> battleField = new HashMap<>();
+    private static HashMap<Character, String[]> battleFieldWithShips = new HashMap<>();
+    private static HashMap<Character, String[]> battleFieldWithFog = new HashMap<>();
     private static ArrayList<Object []> createdShipsCoordinates = new ArrayList<>();
     private static Object[][] battleShips = new Object[][]{
             {"Aircraft Carrier", 5},
@@ -20,27 +21,29 @@ public class Battleship {
             {"Destroyer", 2}
     };
 
+
     public static void main(String[] args) {
-        createBattleField();
-        printBattleField();
-        fillBattleField();
-        takeAshoot();
+        createBattleField(battleFieldWithShips);
+        createBattleField(battleFieldWithFog);
+        printBattleField(battleFieldWithShips);
+        fillBattleField(battleFieldWithShips);
+        takeAshoot(battleFieldWithFog);
     }
 
 
-    public static void createBattleField() {
+    public static void createBattleField(HashMap<Character, String[]> battleFieldName) {
         // create a HashMap "battleField", where 'i' is a character from 'A' to 'J'(inclusively)
         for (int i=(int) 'A'; i<=(int) 'J'; i++) {
-            battleField.put((char) i, new String[] {" ~", " ~", " ~", " ~", " ~", " ~", " ~", " ~", " ~", " ~"});
+            battleFieldName.put((char) i, new String[] {" ~", " ~", " ~", " ~", " ~", " ~", " ~", " ~", " ~", " ~"});
         }
     }
 
 
-    public static void printBattleField() {
+    public static void printBattleField(HashMap<Character, String[]> battleFieldName) {
         System.out.println("  1 2 3 4 5 6 7 8 9 10");
 
-        for (Character key: battleField.keySet()) {
-            System.out.println(key + String.join("", battleField.get(key)));
+        for (Character key: battleFieldName.keySet()) {
+            System.out.println(key + String.join("", battleFieldName.get(key)));
         }
         System.out.println();
     }
@@ -94,12 +97,22 @@ public class Battleship {
         return ((int) leftCharCoord != (int) rigthCharCoord) && (leftIntCoord != rigthIntCoord);
     }
 
-    public static boolean checkBattlefieldBoundaries() {
+
+    public static boolean checkBattlefieldBoundaries(boolean twoCoordnates) {
         // validation of the battlefield boundaries
-        return ((int) leftCharCoord * (int) rigthCharCoord) < (int) 'A' * (int) 'A' ||
-                ((int) leftCharCoord * (int) rigthCharCoord) > (int) 'J' * (int) 'J' ||
-                (leftIntCoord * rigthIntCoord) < 1 ||
-                (leftIntCoord * rigthIntCoord) > 100;
+        boolean result;
+        if (twoCoordnates) {
+            result = (int) leftCharCoord * (int) rigthCharCoord < (int) 'A' * (int) 'A' ||
+                    (int) leftCharCoord * (int) rigthCharCoord > (int) 'J' * (int) 'J' ||
+                    leftIntCoord * rigthIntCoord < 1 ||
+                    leftIntCoord * rigthIntCoord > 100;
+        } else {
+            result = (int) leftCharCoord < (int) 'A' ||
+                    (int) leftCharCoord > (int) 'J' ||
+                    leftIntCoord < 1 ||
+                    leftIntCoord > 10;
+        }
+        return result;
     }
 
 
@@ -151,7 +164,7 @@ public class Battleship {
             flag = true;
             System.out.printf("Error! Wrong length of the %s! Try again: \n\n", battleShip[0]);
         } else if (
-            checkShapeOfTheShip() || checkBattlefieldBoundaries()
+            checkShapeOfTheShip() || checkBattlefieldBoundaries(true)
         ) {
             flag = true;
             System.out.println("Error! Wrong ship location! Try again:\n");
@@ -164,48 +177,45 @@ public class Battleship {
     }
 
 
-    public static void fillBattleField() {
+    public static void fillBattleField(HashMap<Character, String[]> battleFieldName) {
         for (Object[] battleShip : battleShips) {
             System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip[0], battleShip[1]);
             while (true) {
                 if (!validator(battleShip)) {
                     for (int i=Math.min((int) leftCharCoord, (int) rigthCharCoord); i<=Math.max((int) leftCharCoord, (int) rigthCharCoord); i++) {
                         for (int j=Math.min(leftIntCoord, rigthIntCoord); j<=Math.max(leftIntCoord, rigthIntCoord); j++) {
-                            battleField.get((char) i)[j-1] = " O";
+                            battleFieldName.get((char) i)[j-1] = " O";
                         }
                     }
                     createdShipsCoordinates.add(new Object[] {leftCharCoord, leftIntCoord, rigthCharCoord, rigthIntCoord});
                     break;
                 }
             }
-            printBattleField();
+            printBattleField(battleFieldName);
         }
     }
 
-    public static void takeAshoot() {
+
+    public static void takeAshoot(HashMap<Character, String[]> battleFieldName) {
         System.out.println("The game starts!\n");
-        printBattleField();
+        printBattleField(battleFieldName);
         System.out.println("Take a shot!\n");
         while (true) {
-            if (takeCoordinates() || (
-                    (int) leftCharCoord < (int) 'A' ||
-                    (int) leftCharCoord > (int) 'J' ||
-                    leftIntCoord < 1 ||
-                    leftIntCoord > 10
-                )
-            ) {
+            if (takeCoordinates() || checkBattlefieldBoundaries(false))
+            {
                 System.out.println("Error! You entered the wrong coordinates! Try again:\n");
                 continue;
             }
             if (compareCoordinates(leftCharCoord, leftIntCoord, '!', 0, 0)) {
-                battleField.get(leftCharCoord)[leftIntCoord-1] = " X";
-                printBattleField();
+                battleFieldName.get(leftCharCoord)[leftIntCoord-1] = " X";
+                printBattleField(battleFieldName);
                 System.out.println("You hit a ship!\n");
             } else {
-                battleField.get(leftCharCoord)[leftIntCoord-1] = " M";
-                printBattleField();
+                battleFieldName.get(leftCharCoord)[leftIntCoord-1] = " M";
+                printBattleField(battleFieldName);
                 System.out.println("You missed!\n");
             }
+            printBattleField(battleFieldWithShips);
             break;
         }
     }
