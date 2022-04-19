@@ -13,13 +13,30 @@ public class Battleship {
     private static HashMap<Character, String[]> battleFieldWithShips = new HashMap<>();
     private static HashMap<Character, String[]> battleFieldWithFog = new HashMap<>();
     private static ArrayList<Object []> createdShipsCoordinates = new ArrayList<>();
-    private static Object[][] battleShips = new Object[][]{
-            {"Aircraft Carrier", 5},
-            {"Battleship", 4},
-            {"Submarine", 3},
-            {"Cruiser", 3},
-            {"Destroyer", 2}
-    };
+
+    enum Vessels {
+        AIRCRAFT_CARRIER("Aircraft Carrier", 5),
+        BATTLESHIP("Battleship", 4),
+        SUBMARINE("Submarine", 3),
+        CRUISER("Cruiser", 3),
+        DESTROYER("Destroyer", 2);
+
+        final String name;
+        final int boatLength;
+
+        Vessels(String name, int boatLength) {
+            this.name = name;
+            this.boatLength = boatLength;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getBoatLength() {
+            return boatLength;
+        }
+    }
 
 
     public static void main(String[] args) {
@@ -27,7 +44,7 @@ public class Battleship {
         createBattleField(battleFieldWithFog);
         printBattleField(battleFieldWithShips);
         fillBattleField(battleFieldWithShips);
-        takeAshoot(battleFieldWithFog);
+        takeAshoot(battleFieldWithFog, battleFieldWithShips);
     }
 
 
@@ -83,12 +100,12 @@ public class Battleship {
     }
 
 
-    public static boolean checkLengthOfTheShip(Object[] battleShip) {
+    public static boolean checkLengthOfTheShip(Vessels battleShip) {
         int lengthOfTheShip = (
             (int) leftCharCoord == (int) rigthCharCoord ?
                     Math.abs(leftIntCoord - rigthIntCoord) + 1 : Math.abs((int) leftCharCoord - (int) rigthCharCoord) + 1
         );
-        return lengthOfTheShip != (int) battleShip[1];
+        return lengthOfTheShip != battleShip.getBoatLength();
     }
 
 
@@ -117,11 +134,11 @@ public class Battleship {
 
 
     public static boolean compareCoordinates(
-            char leftCharCoord,
-            int leftIntCoord,
-            char rigthCharCoord,
-            int rigthIntCoord,
-            int additionalBoundary
+        char leftCharCoord,
+        int leftIntCoord,
+        char rigthCharCoord,
+        int rigthIntCoord,
+        int additionalBoundary
     ) {
         boolean answer = false;
         boolean compareIntCoord, compareCharCoord;
@@ -154,7 +171,7 @@ public class Battleship {
     }
 
 
-    public static boolean validator(Object[] battleShip) {
+    public static boolean validator(Vessels battleShip) {
         boolean flag = false;
 
         if (takeCoordinates()) {
@@ -162,7 +179,7 @@ public class Battleship {
             System.out.println("Error! Wrong ship coordinates! Try again:\n");
         } else if (checkLengthOfTheShip(battleShip)) {
             flag = true;
-            System.out.printf("Error! Wrong length of the %s! Try again: \n\n", battleShip[0]);
+            System.out.printf("Error! Wrong length of the %s! Try again: \n\n", battleShip.getName());
         } else if (
             checkShapeOfTheShip() || checkBattlefieldBoundaries(true)
         ) {
@@ -178,8 +195,8 @@ public class Battleship {
 
 
     public static void fillBattleField(HashMap<Character, String[]> battleFieldName) {
-        for (Object[] battleShip : battleShips) {
-            System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip[0], battleShip[1]);
+        for (Vessels battleShip : Vessels.values()) {
+            System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip.getName(), battleShip.getBoatLength());
             while (true) {
                 if (!validator(battleShip)) {
                     for (int i=Math.min((int) leftCharCoord, (int) rigthCharCoord); i<=Math.max((int) leftCharCoord, (int) rigthCharCoord); i++) {
@@ -196,9 +213,10 @@ public class Battleship {
     }
 
 
-    public static void takeAshoot(HashMap<Character, String[]> battleFieldName) {
+    public static void takeAshoot(HashMap<Character, String[]> battleFieldName1, HashMap<Character, String[]> battleFieldName2) {
+        String message, result;
         System.out.println("The game starts!\n");
-        printBattleField(battleFieldName);
+        printBattleField(battleFieldName1);
         System.out.println("Take a shot!\n");
         while (true) {
             if (takeCoordinates() || checkBattlefieldBoundaries(false))
@@ -207,15 +225,17 @@ public class Battleship {
                 continue;
             }
             if (compareCoordinates(leftCharCoord, leftIntCoord, '!', 0, 0)) {
-                battleFieldName.get(leftCharCoord)[leftIntCoord-1] = " X";
-                printBattleField(battleFieldName);
-                System.out.println("You hit a ship!\n");
+                result = " X";
+                message = "You hit a ship!\n";
             } else {
-                battleFieldName.get(leftCharCoord)[leftIntCoord-1] = " M";
-                printBattleField(battleFieldName);
-                System.out.println("You missed!\n");
+                result = " M";
+                message = "You missed!\n";
             }
-            printBattleField(battleFieldWithShips);
+            battleFieldName1.get(leftCharCoord)[leftIntCoord-1] = result;
+            battleFieldName2.get(leftCharCoord)[leftIntCoord-1] = result;
+            printBattleField(battleFieldName1);
+            System.out.println(message);
+            printBattleField(battleFieldName2);
             break;
         }
     }
