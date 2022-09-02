@@ -1,15 +1,16 @@
 package battleship;
 
+
 import java.util.Scanner;
 
+import static battleship.AbstractShip.checkAllShipsAreSunk;
+import static battleship.AbstractShip.setSunkShips;
 import static battleship.Coordinates.*;
-import static battleship.Vessels.checkAllShipsAreSunk;
-import static battleship.Vessels.setSunkShips;
 
 
 public class Validator {
 
-    public static boolean validator(Vessels battleShip) {
+    public static boolean validator(AbstractShip battleShip) {
         boolean flag = false;
 
         if (takeCoordinates() || checkTypeOfTheCoordinates(getLengthOfTheCoordinates())) {
@@ -21,11 +22,12 @@ public class Validator {
         } else if (checkShapeOfTheShip() || checkBattlefieldBoundaries(true)) {
             flag = true;
             System.out.println("Error! Wrong ship location! Try again:\n");
-        } else if (compareCoordinates(getPreliminaryLeftCharCoord(),
-            getPreliminaryLeftIntCoord(),
-            getPreliminaryRigthCharCoord(),
-            getPreliminaryRigthIntCoord(),
-            1).equals("true"))
+        } else if (compareCoordinates(
+                getPreliminaryLeftCharCoord(),
+                getPreliminaryLeftIntCoord(),
+                getPreliminaryRigthCharCoord(),
+                getPreliminaryRigthIntCoord(),
+                1).equals("true"))
              {
                 flag = true;
                 System.out.println("Error! You placed it too close to another one. Try again:\n");
@@ -34,7 +36,7 @@ public class Validator {
     }
 
 
-    public static boolean checkLengthOfTheShip(Vessels battleShip) {
+    public static boolean checkLengthOfTheShip(AbstractShip battleShip) {
         int lengthOfTheShip = (
             (int) getPreliminaryLeftCharCoord() == (int) getPreliminaryRigthCharCoord() ?
             Math.abs(getPreliminaryLeftIntCoord() - getPreliminaryRigthIntCoord()) + 1 :
@@ -77,6 +79,7 @@ public class Validator {
 
 
     public static String compareCoordinates(
+        AbstractShip[] allShips,
         char leftCharCoord,
         int leftIntCoord,
         char rigthCharCoord,
@@ -86,7 +89,7 @@ public class Validator {
         String answer = "false";
         boolean compareIntCoord, compareCharCoord;
 
-        for (Vessels battleShip : Vessels.values()) {
+        for (AbstractShip battleShip : allShips) {
             if (battleShip.getRigthIntCoord() != 0 &&
                 battleShip.getLeftIntCoord() != 0 &&
                 battleShip.getRigthCharCoord() != '\u0000' &&
@@ -103,7 +106,7 @@ public class Validator {
                         battleShip.setHits(leftCharCoord, leftIntCoord);
                         if (checkIfSunck(battleShip)){
                             answer = "sunk";
-                            setSunkShips(battleShip.name());
+                            setSunkShips(battleShip.getName());
                             if(checkAllShipsAreSunk()){
                                 answer = "sunk_all_ships";
                             }
@@ -143,7 +146,7 @@ public class Validator {
     }
 
 
-    public static boolean checkIfSunck(Vessels battleShip) {
+    public static boolean checkIfSunck(AbstractShip battleShip) {
         return battleShip.isSunk();
     }
 

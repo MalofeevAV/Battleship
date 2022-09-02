@@ -1,10 +1,9 @@
 package battleship;
 
-import static battleship.Battlefield.fillBattleField;
+import static battleship.AbstractShip.checkAllShipsAreSunk;
 import static battleship.Battlefield.printBattleField;
 import static battleship.Coordinates.*;
 import static battleship.Validator.*;
-import static battleship.Vessels.checkAllShipsAreSunk;
 
 
 public class Battleship {
@@ -17,7 +16,7 @@ public class Battleship {
         for (Battlefield player : players){
             System.out.printf("%s, place your ships on the game field\n\n", player.getPlayerName());
             printBattleField(player.getBattleFieldWithShips());
-            fillBattleField(player.getBattleFieldWithShips());
+            player.fillBattleField(player.getBattleFieldWithShips());
             pressEnter();
         }
         takeAshoot(players);
@@ -40,12 +39,21 @@ public class Battleship {
                 String result = " X";
 
                 if (takeCoordinates() ||
-                        checkTypeOfTheCoordinates(getLengthOfTheCoordinates()) ||
-                        checkBattlefieldBoundaries(false)
+                    checkTypeOfTheCoordinates(getLengthOfTheCoordinates()) ||
+                    checkBattlefieldBoundaries(false)
                 ) {
                     System.out.println("Error! You entered the wrong coordinates! Try again:\n");
                 } else {
-                    switch (compareCoordinates(getPreliminaryLeftCharCoord(), getPreliminaryLeftIntCoord(), '!', 0, 0)) {
+                    switch (
+                        compareCoordinates(
+                            player.getAllShips(),
+                            getPreliminaryLeftCharCoord(),
+                            getPreliminaryLeftIntCoord(),
+                            '!',
+                            0,
+                            0
+                        )
+                    ) {
                         case "sunk_all_ships":
                             message = "You sank the last ship. You won. Congratulations!\n";
                             break;

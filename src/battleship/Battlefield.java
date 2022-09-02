@@ -1,22 +1,48 @@
 package battleship;
 
+
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static battleship.Coordinates.*;
 import static battleship.Validator.validator;
 
-
 public class Battlefield {
-
-    private int num = 1;
-    private String playerName = "Player " + num;
+    private static int num = 1;
+    private AbstractShip[] allShips = new AbstractShip[5];
+    private String playerName;
     private HashMap<Character, String[]> battleFieldWithShips = new HashMap<>();
     private HashMap<Character, String[]> battleFieldWithFog = new HashMap<>();
+    private static final Object[][] battleships = {
+            {"Aircraft Carrier", 5},
+            {"Battleship", 4},
+            {"Submarine", 3},
+            {"Cruiser", 3},
+            {"Destroyer", 2}
+    };
 
     public Battlefield() {
+        int i = 0;
+        this.playerName = "Player " + num++;
         this.battleFieldWithShips = createBattleField(battleFieldWithShips);
         this.battleFieldWithFog = createBattleField(battleFieldWithFog);
-        num++;
+        for (Object[] battleship : battleships) {
+            this.allShips[i++] = new AbstractShip(
+                String.valueOf(battleship[0]),
+                (int) battleship[1],
+                new char[2],
+                new int[2],
+                new HashSet<String>()
+            );
+        }
+    }
+
+    public AbstractShip[] getAllShips() {
+        return allShips;
+    }
+
+    public static int getLengthOfAllShips() {
+        return battleships.length;
     }
 
     public String getPlayerName() {
@@ -54,14 +80,13 @@ public class Battlefield {
     }
 
 
-    public static void fillBattleField(HashMap<Character, String[]> battleFieldName) {
-        for (Vessels battleShip : Vessels.values()) {
+    public void fillBattleField(HashMap<Character, String[]> battleFieldName) {
+        for (AbstractShip battleShip : allShips) {
             System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip.getName(), battleShip.getBoatLength());
             while (true) {
                 if (!validator(battleShip)) {
                     battleShip.setCharCoordinates(getPreliminaryLeftCharCoord(), getPreliminaryRigthCharCoord());
                     battleShip.setIntCoordinates(getPreliminaryLeftIntCoord(), getPreliminaryRigthIntCoord());
-
                     for (int i=Math.min(battleShip.getLeftCharCoord(), battleShip.getRigthCharCoord());
                          i<=Math.max(battleShip.getLeftCharCoord(), battleShip.getRigthCharCoord());
                          i++
