@@ -9,31 +9,36 @@ import static battleship.Validator.*;
 public class Battleship {
 
     public static void main(String[] args) {
-        Battlefield player1 = new Battlefield();
-        Battlefield player2 = new Battlefield();
-        Battlefield[] players = new Battlefield[]{player1, player2};
+        Battlefield[] players = {new Battlefield(), new Battlefield()};
 
         for (Battlefield player : players){
             System.out.printf("%s, place your ships on the game field\n\n", player.getPlayerName());
             printBattleField(player.getBattleFieldWithShips());
             player.fillBattleField(player.getBattleFieldWithShips());
-            pressEnter();
+//            pressEnter();
         }
         takeAshoot(players);
     }
 
     public static void takeAshoot(Battlefield[] players) {
+        boolean flag = false;
+//        int i = 0;
+//        int j = 1;
 //        System.out.println("The game starts!\n");
 //        printBattleField(battleFieldWithFog);
 //        System.out.println("Take a shot!\n");
 
         while (!checkAllShipsAreSunk()) {
-            for (Battlefield player : players){
-                printBattleField(player.getBattleFieldWithFog());
-                System.out.println("---------------------");
-                printBattleField(player.getBattleFieldWithShips());
+            for (int i = 0, j = 1; i<players.length; i++, j--){
+                Battlefield currentPlayer = players[i];
+                Battlefield enemy = players[j];
 
-                System.out.printf("%s, it's your turn:\n", player.getPlayerName());
+                pressEnter();
+                printBattleField(currentPlayer.getBattleFieldWithFog());
+                System.out.println("---------------------");
+                printBattleField(currentPlayer.getBattleFieldWithShips());
+
+                System.out.printf("%s, it's your turn:\n", currentPlayer.getPlayerName());
 
                 String message = "";
                 String result = " X";
@@ -46,7 +51,7 @@ public class Battleship {
                 } else {
                     switch (
                         compareCoordinates(
-                            player.getAllShips(),
+                            enemy.getAllShips(),
                             getPreliminaryLeftCharCoord(),
                             getPreliminaryLeftIntCoord(),
                             '!',
@@ -56,21 +61,25 @@ public class Battleship {
                     ) {
                         case "sunk_all_ships":
                             message = "You sank the last ship. You won. Congratulations!\n";
+                            flag = true;
                             break;
                         case "sunk":
                             message = "You sank a ship! Specify a new target:\n";
                             break;
                         case "true":
-                            message = "You hit a ship! Try again:\n";
+                            message = "You hit a ship!\n";
                             break;
                         case "false":
                             result = " M";
-                            message = "You missed! Try again:\n";
+                            message = "You missed!\n";
                             break;
                     }
-                    player.setBattleField(player.getBattleFieldWithFog(), getPreliminaryLeftCharCoord(), getPreliminaryLeftIntCoord(), result);
-                    player.setBattleField(player.getBattleFieldWithShips(), getPreliminaryLeftCharCoord(), getPreliminaryLeftIntCoord(), result);
+                    currentPlayer.setBattleField(currentPlayer.getBattleFieldWithFog(), getPreliminaryLeftCharCoord(), getPreliminaryLeftIntCoord(), result);
+                    enemy.setBattleField(enemy.getBattleFieldWithShips(), getPreliminaryLeftCharCoord(), getPreliminaryLeftIntCoord(), result);
                     System.out.println(message);
+                    if(flag){
+                        break;
+                    }
                 }
             }
         }

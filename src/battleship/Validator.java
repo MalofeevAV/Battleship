@@ -10,7 +10,7 @@ import static battleship.Coordinates.*;
 
 public class Validator {
 
-    public static boolean validator(AbstractShip battleShip) {
+    public static boolean validator(AbstractShip battleShip, AbstractShip[] allShips) {
         boolean flag = false;
 
         if (takeCoordinates() || checkTypeOfTheCoordinates(getLengthOfTheCoordinates())) {
@@ -23,6 +23,7 @@ public class Validator {
             flag = true;
             System.out.println("Error! Wrong ship location! Try again:\n");
         } else if (compareCoordinates(
+                allShips,
                 getPreliminaryLeftCharCoord(),
                 getPreliminaryLeftIntCoord(),
                 getPreliminaryRigthCharCoord(),

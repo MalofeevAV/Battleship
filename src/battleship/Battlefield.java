@@ -84,7 +84,7 @@ public class Battlefield {
         for (AbstractShip battleShip : allShips) {
             System.out.printf("Enter the coordinates of the %s (%d cells): \n\n", battleShip.getName(), battleShip.getBoatLength());
             while (true) {
-                if (!validator(battleShip)) {
+                if (!validator(battleShip, allShips)) {
                     battleShip.setCharCoordinates(getPreliminaryLeftCharCoord(), getPreliminaryRigthCharCoord());
                     battleShip.setIntCoordinates(getPreliminaryLeftIntCoord(), getPreliminaryRigthIntCoord());
                     for (int i=Math.min(battleShip.getLeftCharCoord(), battleShip.getRigthCharCoord());
