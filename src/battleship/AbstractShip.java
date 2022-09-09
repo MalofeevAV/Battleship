@@ -3,15 +3,12 @@ package battleship;
 
 import java.util.HashSet;
 
-import static battleship.Battlefield.getLengthOfAllShips;
-
 
 public class AbstractShip{
     private final String name;
     private final int boatLength;
     private char[] charCoordinates;
     private int[] intCoordinates;
-    private static HashSet<String> SunkShips = new HashSet<String>();
     private HashSet<String> hits;
 
     public AbstractShip(String name, int boatLength, char[] charCoordinates, int[] intCoordinates, HashSet<String> hits) {
@@ -36,14 +33,6 @@ public class AbstractShip{
 
     public int getRigthIntCoord() {
         return intCoordinates[1];
-    }
-
-    public static void setSunkShips(String ship) {
-        SunkShips.add(ship);
-    }
-
-    public static boolean checkAllShipsAreSunk() {
-        return SunkShips.size() == getLengthOfAllShips();
     }
 
     public String getName() {

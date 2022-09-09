@@ -3,16 +3,13 @@ package battleship;
 
 import java.util.Scanner;
 
-import static battleship.AbstractShip.checkAllShipsAreSunk;
-import static battleship.AbstractShip.setSunkShips;
 import static battleship.Coordinates.*;
 
 
 public class Validator {
 
-    public static boolean validator(AbstractShip battleShip, AbstractShip[] allShips) {
+    public static boolean validator(AbstractShip battleShip, Player currentPlayer) {
         boolean flag = false;
-
         if (takeCoordinates() || checkTypeOfTheCoordinates(getLengthOfTheCoordinates())) {
             flag = true;
             System.out.println("Error! Wrong ship coordinates! Try again:\n");
@@ -23,7 +20,7 @@ public class Validator {
             flag = true;
             System.out.println("Error! Wrong ship location! Try again:\n");
         } else if (compareCoordinates(
-                allShips,
+                currentPlayer,
                 getPreliminaryLeftCharCoord(),
                 getPreliminaryLeftIntCoord(),
                 getPreliminaryRigthCharCoord(),
@@ -80,7 +77,7 @@ public class Validator {
 
 
     public static String compareCoordinates(
-        AbstractShip[] allShips,
+        Player player,
         char leftCharCoord,
         int leftIntCoord,
         char rigthCharCoord,
@@ -90,7 +87,7 @@ public class Validator {
         String answer = "false";
         boolean compareIntCoord, compareCharCoord;
 
-        for (AbstractShip battleShip : allShips) {
+        for (AbstractShip battleShip : player.getAllShips()) {
             if (battleShip.getRigthIntCoord() != 0 &&
                 battleShip.getLeftIntCoord() != 0 &&
                 battleShip.getRigthCharCoord() != '\u0000' &&
@@ -107,8 +104,8 @@ public class Validator {
                         battleShip.setHits(leftCharCoord, leftIntCoord);
                         if (checkIfSunck(battleShip)){
                             answer = "sunk";
-                            setSunkShips(battleShip.getName());
-                            if(checkAllShipsAreSunk()){
+                            player.setSunkShips(battleShip.getName());
+                            if(player.checkAllShipsAreSunk()){
                                 answer = "sunk_all_ships";
                             }
                         }

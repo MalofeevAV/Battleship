@@ -1,7 +1,6 @@
 package battleship;
 
-import static battleship.AbstractShip.checkAllShipsAreSunk;
-import static battleship.Battlefield.printBattleField;
+
 import static battleship.Coordinates.*;
 import static battleship.Validator.*;
 
@@ -9,18 +8,18 @@ import static battleship.Validator.*;
 public class Battleship {
 
     public static void main(String[] args) {
-        Battlefield[] players = {new Battlefield(), new Battlefield()};
+        Player[] players = {new Player(), new Player()};
 
-        for (Battlefield player : players){
+        for (Player player : players){
             System.out.printf("%s, place your ships on the game field\n\n", player.getPlayerName());
-            printBattleField(player.getBattleFieldWithShips());
-            player.fillBattleField(player.getBattleFieldWithShips());
+            player.getBattleFieldWithShips().printBattleField();
+            player.getBattleFieldWithShips().fillBattleField(player);
 //            pressEnter();
         }
         takeAshoot(players);
     }
 
-    public static void takeAshoot(Battlefield[] players) {
+    public static void takeAshoot(Player[] players) {
         boolean flag = false;
 //        int i = 0;
 //        int j = 1;
@@ -28,15 +27,15 @@ public class Battleship {
 //        printBattleField(battleFieldWithFog);
 //        System.out.println("Take a shot!\n");
 
-        while (!checkAllShipsAreSunk()) {
+        while (!flag) {
             for (int i = 0, j = 1; i<players.length; i++, j--){
-                Battlefield currentPlayer = players[i];
-                Battlefield enemy = players[j];
+                Player currentPlayer = players[i];
+                Player enemy = players[j];
 
                 pressEnter();
-                printBattleField(currentPlayer.getBattleFieldWithFog());
+                currentPlayer.getBattleFieldWithFog().printBattleField();
                 System.out.println("---------------------");
-                printBattleField(currentPlayer.getBattleFieldWithShips());
+                currentPlayer.getBattleFieldWithShips().printBattleField();
 
                 System.out.printf("%s, it's your turn:\n", currentPlayer.getPlayerName());
 
@@ -51,7 +50,7 @@ public class Battleship {
                 } else {
                     switch (
                         compareCoordinates(
-                            enemy.getAllShips(),
+                            enemy,
                             getPreliminaryLeftCharCoord(),
                             getPreliminaryLeftIntCoord(),
                             '!',
@@ -74,12 +73,20 @@ public class Battleship {
                             message = "You missed!\n";
                             break;
                     }
-                    currentPlayer.setBattleField(currentPlayer.getBattleFieldWithFog(), getPreliminaryLeftCharCoord(), getPreliminaryLeftIntCoord(), result);
-                    enemy.setBattleField(enemy.getBattleFieldWithShips(), getPreliminaryLeftCharCoord(), getPreliminaryLeftIntCoord(), result);
+                    currentPlayer.getBattleFieldWithFog().setBattleField(
+                            getPreliminaryLeftCharCoord(),
+                            getPreliminaryLeftIntCoord(),
+                            result
+                    );
+                    enemy.getBattleFieldWithShips().setBattleField(
+                            getPreliminaryLeftCharCoord(),
+                            getPreliminaryLeftIntCoord(),
+                            result
+                    );
                     System.out.println(message);
-                    if(flag){
-                        break;
-                    }
+                }
+                if(flag){
+                    break;
                 }
             }
         }
