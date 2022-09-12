@@ -1,6 +1,5 @@
 package battleship;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class Player {
@@ -25,11 +24,11 @@ public class Player {
         this.sunkShips = new HashSet<String>();
         for (Object[] battleship : battleships) {
             this.allShips[i++] = new AbstractShip(
-                    String.valueOf(battleship[0]),
-                    (int) battleship[1],
-                    new char[2],
-                    new int[2],
-                    new HashSet<String>()
+                String.valueOf(battleship[0]),
+                (int) battleship[1],
+                new char[2],
+                new int[2],
+                new HashSet<String>()
             );
         }
     }

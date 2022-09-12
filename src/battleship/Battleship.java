@@ -6,7 +6,6 @@ import static battleship.Validator.*;
 
 
 public class Battleship {
-
     public static void main(String[] args) {
         Player[] players = {new Player(), new Player()};
 
@@ -14,25 +13,21 @@ public class Battleship {
             System.out.printf("%s, place your ships on the game field\n\n", player.getPlayerName());
             player.getBattleFieldWithShips().printBattleField();
             player.getBattleFieldWithShips().fillBattleField(player);
-//            pressEnter();
+            pressEnter(); // исключить вызов во второй раз
         }
         takeAshoot(players);
     }
 
     public static void takeAshoot(Player[] players) {
         boolean flag = false;
-//        int i = 0;
-//        int j = 1;
+
 //        System.out.println("The game starts!\n");
-//        printBattleField(battleFieldWithFog);
-//        System.out.println("Take a shot!\n");
 
         while (!flag) {
             for (int i = 0, j = 1; i<players.length; i++, j--){
                 Player currentPlayer = players[i];
                 Player enemy = players[j];
 
-                pressEnter();
                 currentPlayer.getBattleFieldWithFog().printBattleField();
                 System.out.println("---------------------");
                 currentPlayer.getBattleFieldWithShips().printBattleField();
@@ -87,6 +82,8 @@ public class Battleship {
                 }
                 if(flag){
                     break;
+                } else {
+                    pressEnter();
                 }
             }
         }

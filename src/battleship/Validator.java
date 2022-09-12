@@ -7,7 +7,6 @@ import static battleship.Coordinates.*;
 
 
 public class Validator {
-
     public static boolean validator(AbstractShip battleShip, Player currentPlayer) {
         boolean flag = false;
         if (takeCoordinates() || checkTypeOfTheCoordinates(getLengthOfTheCoordinates())) {
@@ -93,10 +92,20 @@ public class Validator {
                 battleShip.getRigthCharCoord() != '\u0000' &&
                 battleShip.getLeftCharCoord() != '\u0000') {
 
-                compareIntCoord = checkBoarder(battleShip.getLeftIntCoord(), battleShip.getRigthIntCoord(), leftIntCoord,
-                        rigthIntCoord, additionalBoundary);
-                compareCharCoord = checkBoarder(battleShip.getLeftCharCoord(), battleShip.getRigthCharCoord(), leftCharCoord,
-                        rigthCharCoord, additionalBoundary);
+                compareIntCoord = checkBoarder(
+                        battleShip.getLeftIntCoord(),
+                        battleShip.getRigthIntCoord(),
+                        leftIntCoord,
+                        rigthIntCoord,
+                        additionalBoundary
+                );
+                compareCharCoord = checkBoarder(
+                        battleShip.getLeftCharCoord(),
+                        battleShip.getRigthCharCoord(),
+                        leftCharCoord,
+                        rigthCharCoord,
+                        additionalBoundary
+                );
 
                 if (compareIntCoord && compareCharCoord) {
                     answer = "true";
