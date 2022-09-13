@@ -13,15 +13,13 @@ public class Battleship {
             System.out.printf("%s, place your ships on the game field\n\n", player.getPlayerName());
             player.getBattleFieldWithShips().printBattleField();
             player.getBattleFieldWithShips().fillBattleField(player);
-            pressEnter(); // исключить вызов во второй раз
+            pressEnter();
         }
         takeAshoot(players);
     }
 
     public static void takeAshoot(Player[] players) {
         boolean flag = false;
-
-//        System.out.println("The game starts!\n");
 
         while (!flag) {
             for (int i = 0, j = 1; i<players.length; i++, j--){
